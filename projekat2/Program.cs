@@ -233,7 +233,116 @@ Pravila igre su jednostavna, broj na polju pokazuje broj mina pored njega, a vas
                 case 2:
                     Izlaz_Iz_Programa();
                     break;
+                    
             }
+            
+            Polje[,] tabelica = new Polje[x_dimenzije, y_dimenzije];
+
+            for (int i = 0; i < tabelica.GetLength(0); i++)
+            {
+                for (int j = 0; j < tabelica.GetLength(1); j++)
+                {
+                    tabelica[i, j].poseceno = tabelica[i, j].mina = false;
+                }
+            }
+
+            tabelica = Upisi_minice(tabelica, mine, x_dimenzije, y_dimenzije);
+
+
+            int[] odabrano_polje = { 0, 0 };
+            Ispis(tabelica, odabrano_polje[0], odabrano_polje[1], mine);
+            ponavljaj = true;
+
+            while (ponavljaj)
+            {
+                odabrano_polje = BiranjePolja(tabelica, odabrano_polje[0], odabrano_polje[1], mine);
+                if (tabelica[odabrano_polje[0], odabrano_polje[1]].mina)
+                {
+                    Console.Clear();
+                    Ispis_Tabelice_Poraz(tabelica);
+                }
+                else
+                {
+                    Otvori_Polje(tabelica, odabrano_polje[0], odabrano_polje[1]);
+                }
+                if (ponavljaj == false)
+                {
+                    Meni_Start();
+                }
+            }
+        }
+
+        static int Pokreni(string[] Options)
+        {
+            int indeks = 0;
+
+            ConsoleKey pritisnuto_dugme;
+            do
+            {
+                Console.Clear();
+                Displej(Options, indeks);
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    indeks++;
+                }
+                if (indeks == Options.Length)
+                {
+                    indeks = 0;
+                }
+                else if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    indeks--;
+                }
+                if (indeks == -1)
+                {
+                    indeks = Options.Length - 1;
+                }
+                pritisnuto_dugme = keyInfo.Key;
+            } while (pritisnuto_dugme != ConsoleKey.Enter); //program ceka da se pritisne enter
+            return indeks;
+        }
+
+        static void Displej(string[] Options, int indeks)
+        {
+            Naslov();
+            Console.WriteLine();
+            for (int i = 0; i < Options.Length; i++)
+            {
+                if (i == indeks)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("-> ");
+                    string trenutna_opcija = Options[i];
+                    Console.WriteLine(trenutna_opcija);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    string trenutna_opcija = Options[i];
+                    Console.WriteLine("  " + trenutna_opcija);
+                }
+                Console.ResetColor();
+            }
+        }
+
+        static void Surenje()
+        {
+            Console.WriteLine(@"  ___                              _                  _ 
+ |_ _|__ _ _ __ __ _    __ _  ___ | |_ _____   ____ _| |
+  | |/ _` | '__/ _` |  / _` |/ _ \| __/ _ \ \ / / _` | |
+  | | (_| | | | (_| | | (_| | (_) | || (_) \ V / (_| |_|
+ |___\__, |_|  \__,_|  \__, |\___/ \__\___/ \_/ \__,_(_)
+     |___/             |___/                            
+                                         
+                                                  
+Pritinsite [Enter] da nastavite...");
+            ponavljaj = false;
+        }
 
         static void Main(string[] args)
         {
