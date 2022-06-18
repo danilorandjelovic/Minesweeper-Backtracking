@@ -646,11 +646,53 @@ Pritinsite [Enter] da nastavite...");
                 Console.WriteLine();
             }
         }
+        static int Izbroji_Susede(Polje[,] tabela, int x, int y)
+        {
+            int susedi = 0;
+            for (int i = x - 1; i < x + 2; i++)
+            {
+                for (int j = y - 1; j < y + 2; j++)
+                {
+                    if (Proveri_Dimenzije(i, j, tabela) && tabela[i, j].mina == true)
+                    {
+                        susedi++;
+                    }
+                }
+            }
+            if (susedi == 0)
+            {
+                Otvori_Susede(tabela, x, y);
+            }
+            return susedi;
+        }
+        //implementacija backtracking-a
+        static void Otvori_Susede(Polje[,] tabela, int x, int y)
+        {
+            Otvori_Polje(tabela, x - 1, y - 1); Otvori_Polje(tabela, x - 1, y);
+            Otvori_Polje(tabela, x - 1, y + 1); Otvori_Polje(tabela, x, y - 1);
+            Otvori_Polje(tabela, x, y + 1); Otvori_Polje(tabela, x + 1, y - 1);
+            Otvori_Polje(tabela, x + 1, y); Otvori_Polje(tabela, x + 1, y + 1);
+        }
 
+        static void Otvori_Polje(Polje[,] tabela, int x, int y)
+        {
+            if (Proveri_Dimenzije(x, y, tabela) && tabela[x, y].poseceno != true)
+            {
+                tabela[x, y].poseceno = true;
+                if (Izbroji_Susede(tabela, x, y) == 0)
+                    Otvori_Susede(tabela, x, y);
+            }
+            else return;
+        }
+
+        static bool Proveri_Dimenzije(int x, int y, Polje[,] tabela)
+        {
+            return x >= 0 && x < tabela.GetLength(0) && y >= 0 && y < tabela.GetLength(1);
+        }
         
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello");
+            Meni_Start();
         }
     }
 }
